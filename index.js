@@ -24,12 +24,12 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-const days = ['Sun', 'Mon', 'Tue', 'Wen', 'Thu', 'Fri', 'Sat'];
+const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 function resJson(unix , date , res){
   utc = days[date.getDay()] + ", " 
-    + date.getUTCDate() + " "
+    + date.getUTCDate().toString().padStart(2, '0') + " "
     + months[date.getUTCMonth()] + " "
     + date.getUTCFullYear() + " "
     + date.getUTCHours().toString().padStart(2, '0') + ":"
@@ -58,11 +58,7 @@ app.get("/api/:date?",function(req, res){
     unix = dateUnix.getTime();
     resJson(unix, dateUnix, res); 
   }else{
-    date = new Date(dateString);
-    if(isNaN(date.getTime())){
       res.json({ error : "Invalid Date" });
-      throw new Error('Invalid date string');
-    }
   }
 
  });
