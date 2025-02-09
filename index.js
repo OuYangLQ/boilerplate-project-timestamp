@@ -24,6 +24,44 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+const days = ['Sun', 'Mon', 'Tue', 'Wen', 'Thu', 'Fri', 'Sat'];
+
+function resJson(unix , date , res){
+  utc = days[date.getDay()] + ", " 
+    + date.getUTCDay() + " "
+    + date.getUTCMonth() + " "
+    + date.getUTCFullYear() + " "
+    + date.getUTCHours() + " "
+    + date.getUTCMinutes() + " "
+    + date.getUTCSeconds() + " GMT";
+  res.json({unix: unix,utc: utc}); 
+}
+
+app.get("/api/:date?",function(req, res){
+  let dateString = req.params.date;
+  let unix;
+  let date;
+
+  // undefined 2015-12-25 1451001600000 非法
+  dateUTC = new Date(dateString);
+  dateUnix = new Date(Number(dateString));
+
+  if(dateString === undefined){
+    unix = Date.now();
+    date = new Date();
+    resJson(unix, date, res);
+  }else if(!isNaN(dateUTC)){
+    unix = dateUTC.getTime();
+    resJson(unix, dateUTC, res);
+  }else if(!isNaN(dateUnix)){
+    unix = dateUnix.getTime();
+    resJson(unix, dateUnix, res); 
+  }else{
+      res.json({ error : "Invalid Date" });
+  }
+
+ });
+
 
 
 // Listen on port set in environment variable or default to 3000
